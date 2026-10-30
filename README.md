@@ -15,7 +15,7 @@
 npm i shiplap-calculator-engine
 
 # or install straight from this repo (built on the fly via the prepare script)
-npm i github:cxl769807768/shawncalc
+npm i github:shawncalc/shiplap-calculator-engine
 ```
 
 ```ts

@@ -42,7 +42,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && node scripts/bundle.mjs",
     "test": "npm run build && node --test \"test/*.test.mjs\"",
-    "prepublishOnly": "npm run test"
+    "prepublishOnly": "npm run test",
+    "prepare": "npm run build"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

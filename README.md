@@ -12,6 +12,10 @@
 - MIT licensed. Use it in your own tool, fork it, ship it.
 
 ```bash
+# install straight from this repo (built on the fly via the prepare script)
+npm i github:cxl769807768/shiplap-calculator-engine
+
+# an npm release is planned — this will work once it lands:
 npm i shiplap-calculator-engine
 ```
 

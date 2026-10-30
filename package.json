@@ -18,10 +18,10 @@
   "homepage": "https://wallboardcalc.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dushangxiaolong/shiplap-calculator-engine.git"
+    "url": "git+https://github.com/cxl769807768/shiplap-calculator-engine.git"
   },
   "bugs": {
-    "url": "https://github.com/dushangxiaolong/shiplap-calculator-engine/issues"
+    "url": "https://github.com/cxl769807768/shiplap-calculator-engine/issues"
   },
   "type": "module",
   "main": "./dist/index.js",

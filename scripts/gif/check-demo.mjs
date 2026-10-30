@@ -1,0 +1,20 @@
+import { chromium } from 'playwright';
+const b = await chromium.launch({ executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: true });
+const p = await b.newPage({ viewport: { width: 900, height: 900 } });
+const errs = [];
+p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
+p.on('pageerror', e => errs.push('pageerror: ' + e.message));
+await p.goto('file:///D:/workbuddy_project/shiplap-calculator-engine/docs/index.html');
+await p.waitForTimeout(300);
+const out = await p.textContent('#out');
+const svgLen = (await p.innerHTML('#preview')).length;
+// change wall to 12ft x 10ft and confirm it recomputes
+await p.fill('#hgt', '120');
+await p.waitForTimeout(150);
+const out2 = await p.textContent('#out');
+await p.screenshot({ path: 'scripts/gif/shots/demo-page.png', fullPage: false });
+console.log('console errors:', errs.length ? errs : 'none');
+console.log('initial out:', out.replace(/\s+/g, ' ').slice(0, 160));
+console.log('preview svg bytes:', svgLen);
+console.log('after 120in height:', out2.replace(/\s+/g, ' ').slice(0, 120));
+await b.close();

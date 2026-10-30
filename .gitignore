@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+scripts/gif/node_modules/
+scripts/gif/shots/
+scripts/gif/package-lock.json

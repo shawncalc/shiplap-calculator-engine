@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>shiplap-calculator-engine — browser demo</title>
+<meta name="description" content="Minimal browser demo of the pure TypeScript shiplap engine that powers wallboardcalc.com.">
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px 16px 64px;
+    font: 16px/1.5 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f7f5f1; color: #292524;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+  .hero { text-align: center; margin-bottom: 28px; }
+  .hero h1 { font-size: 26px; margin: 0 0 6px; }
+  .hero p { margin: 0; color: #78716c; }
+  .cta {
+    display: inline-block; margin: 14px 0 4px; padding: 12px 26px;
+    background: #b45309; color: #fff; border-radius: 8px;
+    font-weight: 700; text-decoration: none; font-size: 17px;
+  }
+  .cta:hover { background: #92400e; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+  .card {
+    background: #fff; border: 1px solid #e7e5e4; border-radius: 12px; padding: 20px;
+  }
+  .card h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .06em; color: #78716c; margin: 0 0 14px; }
+  label { display: block; font-size: 13px; font-weight: 600; margin: 10px 0 3px; }
+  input, select {
+    width: 100%; padding: 8px 10px; border: 1px solid #d6d3d1; border-radius: 8px;
+    font-size: 15px; background: #fafaf9;
+  }
+  .out { font-size: 15px; }
+  .out b { font-size: 22px; color: #b45309; }
+  .out .row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px dashed #e7e5e4; }
+  .out .row:last-child { border-bottom: 0; }
+  .note { font-size: 12.5px; color: #a8a29e; margin-top: 10px; }
+  code { background: #f5f5f4; padding: 1px 6px; border-radius: 5px; font-size: 13px; }
+  footer { text-align: center; margin-top: 30px; font-size: 13px; color: #78716c; }
+  footer a { color: #b45309; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <h1>shiplap-calculator-engine</h1>
+    <p>Every number below is computed in your browser by the same pure TypeScript engine that powers the live site. No server, no tracking.</p>
+    <a class="cta" href="https://wallboardcalc.com/shiplap-calculator/">Try it on wallboardcalc.com →</a>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Wall</h2>
+      <label for="len">Wall length (inches)</label>
+      <input id="len" type="number" value="144" min="1" step="0.5">
+      <label for="hgt">Wall height (inches)</label>
+      <input id="hgt" type="number" value="96" min="1" step="0.5">
+      <label for="w">Board face width (inches)</label>
+      <select id="w">
+        <option value="3.5">1x4 — 3½ in</option>
+        <option value="5.5" selected>1x6 — 5½ in</option>
+        <option value="7.25">1x8 — 7¼ in</option>
+      </select>
+      <label for="r">Reveal (inches)</label>
+      <select id="r">
+        <option value="0">Flush — 0</option>
+        <option value="0.0625">Micro gap — 1/16</option>
+        <option value="0.125" selected>Nickel gap — 1/8</option>
+      </select>
+      <label for="bl">Stock board length (inches)</label>
+      <select id="bl">
+        <option value="96" selected>8 ft</option>
+        <option value="144">12 ft</option>
+        <option value="192">16 ft</option>
+      </select>
+      <label for="wa">Waste allowance</label>
+      <select id="wa">
+        <option value="0.05">5%</option>
+        <option value="0.1" selected>10%</option>
+        <option value="0.15">15%</option>
+      </select>
+      <label for="op">Window &amp; door area (sq in, optional)</label>
+      <input id="op" type="number" value="0" min="0" step="1">
+    </div>
+
+    <div class="card">
+      <h2>Result</h2>
+      <div class="out" id="out"></div>
+      <svg id="preview" width="100%" height="220" viewBox="0 0 360 220" aria-label="Wall preview"></svg>
+      <p class="note">Effective width = face width − reveal. Rows = ceil(wall height ÷ effective width). Offcuts are reused across rows before the waste factor is applied.</p>
+    </div>
+  </div>
+
+  <footer>
+    Engine: <code>npm i shiplap-calculator-engine</code> · MIT ·
+    <a href="https://wallboardcalc.com">wallboardcalc.com</a>
+  </footer>
+</div>
+
+<script src="./engine.js"></script>
+<script>
+  var $ = function (id) { return document.getElementById(id); };
+  var E = WallboardEngine;
+
+  function render() {
+    var result = E.calculateShiplap({
+      wallLengthIn: Number($('len').value),
+      wallHeightIn: Number($('hgt').value),
+      boardWidthIn: Number($('w').value),
+      revealIn: Number($('r').value),
+      boardLengthIn: Number($('bl').value),
+      wasteRatio: Number($('wa').value),
+      openingsSqIn: Number($('op').value) || 0,
+    });
+
+    var out = $('out');
+    if (!result.valid) {
+      out.innerHTML = '<p>Enter a wall size (at least 1 in × 1 in) to see the numbers.</p>';
+      $('preview').innerHTML = '';
+      return;
+    }
+    out.innerHTML =
+      '<div class="row"><span>Rows (courses)</span><b>' + result.rows + '</b></div>' +
+      '<div class="row"><span>Boards (incl. waste)</span><b>' + result.boards + '</b></div>' +
+      '<div class="row"><span>Linear feet</span><b>' + result.linearFeet.toFixed(1) + '</b></div>' +
+      '<div class="row"><span>Effective board width</span><span>' + result.effectiveWidthIn + ' in</span></div>' +
+      '<div class="row"><span>Final row width</span><span>' + result.finalRowWidthIn.toFixed(2) + ' in' +
+        (result.finalRowNeedsCut ? ' · rip cut' : ' · full board') + '</span></div>' +
+      '<div class="row"><span>Net wall area</span><span>' + (result.netAreaSqIn / 144).toFixed(1) + ' sq ft</span></div>' +
+      (result.suggestSplitRows ? '<p class="note">Top row is a thin sliver — splitting the shortfall between first and last course is easier to nail.</p>' : '');
+
+    // Simple wall preview: horizontal stripes, last one narrower if ripped.
+    var svg = $('preview');
+    var W = 360, H = 220, n = Math.min(result.rows, 24);
+    var step = H / n, gap = Math.max(1, Math.min(4, step * 0.18));
+    var s = '';
+    for (var i = 0; i < n; i++) {
+      var isLast = i === n - 1 && result.rows > 24;
+      s += '<rect x="8" y="' + (i * step).toFixed(1) + '" width="' + (W - 16) +
+           '" height="' + Math.max(2, step - gap).toFixed(1) + '" rx="2" fill="' +
+           (i % 2 ? '#e7e5e4' : '#d6d3d1') + '"/>';
+    }
+    if (result.rows > 24) {
+      s += '<text x="' + (W / 2) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="11" fill="#78716c">showing ' + n + ' of ' + result.rows + ' rows</text>';
+    }
+    svg.innerHTML = s;
+  }
+
+  ['len', 'hgt', 'w', 'r', 'bl', 'wa', 'op'].forEach(function (id) {
+    $(id).addEventListener('input', render);
+  });
+  render();
+</script>
+</body>
+</html>

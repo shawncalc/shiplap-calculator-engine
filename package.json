@@ -1,0 +1,52 @@
+{
+  "name": "shiplap-calculator-engine",
+  "version": "1.0.0",
+  "description": "Pure TypeScript calculation engines for shiplap cladding and drywall projects: board counts, cut-aware offcut reuse, sheet counts, fasteners and joint compound. The engine behind wallboardcalc.com.",
+  "keywords": [
+    "shiplap",
+    "drywall",
+    "calculator",
+    "cladding",
+    "boards",
+    "sheetrock",
+    "diy",
+    "construction",
+    "materials"
+  ],
+  "license": "MIT",
+  "author": "Shawn Chen",
+  "homepage": "https://wallboardcalc.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dushangxiaolong/shiplap-calculator-engine.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dushangxiaolong/shiplap-calculator-engine/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/bundle.mjs",
+    "test": "npm run build && node --test \"test/*.test.mjs\"",
+    "prepublishOnly": "npm run test"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.5.0"
+  }
+}

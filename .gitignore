@@ -5,3 +5,4 @@ dist/
 scripts/gif/node_modules/
 scripts/gif/shots/
 scripts/gif/package-lock.json
+.npmrc

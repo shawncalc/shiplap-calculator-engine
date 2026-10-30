@@ -1,0 +1,18 @@
+import { chromium } from 'playwright';
+const b = await chromium.launch({ executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: true });
+const p = await b.newPage({ viewport: { width: 900, height: 900 } });
+const errs = [];
+p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
+p.on('response', r => { if (r.status() >= 400) errs.push(r.status() + ' ' + r.url()); });
+p.on('pageerror', e => errs.push('pageerror: ' + e.message));
+await p.goto('https://cxl769807768.github.io/shiplap-calculator-engine/', { waitUntil: 'networkidle' });
+await p.waitForTimeout(300);
+const out = await p.textContent('#out');
+await p.fill('#hgt', '120');
+await p.waitForTimeout(200);
+const out2 = await p.textContent('#out');
+await p.screenshot({ path: 'shots/live-demo.png' });
+console.log('console errors:', errs.length ? errs : 'none');
+console.log('default:', out.replace(/\s+/g, ' ').slice(0, 110));
+console.log('hgt=120:', out2.replace(/\s+/g, ' ').slice(0, 80));
+await b.close();

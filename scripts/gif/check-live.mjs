@@ -5,7 +5,7 @@ const errs = [];
 p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
 p.on('response', r => { if (r.status() >= 400) errs.push(r.status() + ' ' + r.url()); });
 p.on('pageerror', e => errs.push('pageerror: ' + e.message));
-await p.goto('https://cxl769807768.github.io/shiplap-calculator-engine/', { waitUntil: 'networkidle' });
+await p.goto('https://shawncalc.github.io/shiplap-calculator-engine/', { waitUntil: 'networkidle' });
 await p.waitForTimeout(300);
 const out = await p.textContent('#out');
 await p.fill('#hgt', '120');

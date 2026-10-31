@@ -1,6 +1,6 @@
 {
   "name": "shiplap-calculator-engine",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Pure TypeScript calculation engines for shiplap cladding and drywall projects: board counts, cut-aware offcut reuse, sheet counts, fasteners and joint compound. The engine behind wallboardcalc.com.",
   "keywords": [
     "shiplap",
